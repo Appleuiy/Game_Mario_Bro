@@ -10,6 +10,7 @@ class Game:
     def __init__(self):
         self.screen = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
+        self.keys = pygame.key.get_pressed()
     def run(self, state):
        
         while True:
@@ -23,7 +24,7 @@ class Game:
             # self.screen.fill((random.randint(0,255), random.randint(0,255), random.randint(0,255)))
             # image = get_image(GRAPHICS['mario_bros'], 145, 32, 16, 16, (0,0,0), random.randint(5,15))
             # self.screen.blit(image, (300,300))
-            state.update(self.screen)
+            state.update(self.screen,self.keys)
             
             pygame.display.update()
             self.clock.tick(60)
