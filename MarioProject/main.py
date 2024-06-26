@@ -1,11 +1,19 @@
 import pygame
 from source import tools, setup
-from source.states import main_menu
+from source.states import main_menu, level, load_screen
 
 def main():
-    game = tools.Game()
-    state = main_menu.MainMenu()
-    game.run(state)
+    
+    state_dict = {
+        'main_menu' : main_menu.MainMenu(),
+        'load_screen' : load_screen.LoadScreen(),
+        'level' : level.Level()
+    }
+    game = tools.Game(state_dict, 'main_menu')
+    # state = main_menu.MainMenu()
+    # state = level.Level();
+    # state = load_screen.LoadScreen()
+    game.run()
 
 
 if __name__ == '__main__':

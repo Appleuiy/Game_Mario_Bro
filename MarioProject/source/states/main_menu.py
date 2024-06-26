@@ -8,7 +8,8 @@ class MainMenu:
         self.setup_player()
         self.setup_cursor()
         self.info = info.Info('main_menu')
-
+        self.finished = False
+        self.next = 'load_screen'
 
     def setup_background(self):
         self.background = setup.GRAPHICS['level_1']
@@ -31,7 +32,7 @@ class MainMenu:
         rect = self.cursor.image.get_rect()
         rect.x, rect.y = C.CURSOR_POS
         self.cursor.rect = rect
-        self.state = '1P'
+        self.cursor.state = '1P'
     
     def update_cursor(self, keys):
         if keys[pygame.K_UP]:
@@ -41,10 +42,10 @@ class MainMenu:
             self.cursor.state = '2P'
             self.cursor.rect.y = 410
         elif keys[pygame.K_RETURN]:
-            if self.state == '1P':
-                pass
-            elif self.state == '2P':
-                pass
+            if self.cursor.state == '1P':
+                self.finished = True
+            elif self.cursor.state == '2P':
+                self.finished = True
 
     
     
