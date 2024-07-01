@@ -7,9 +7,10 @@ def main():
     state_dict = {
         'main_menu' : main_menu.MainMenu(),
         'load_screen' : load_screen.LoadScreen(),
-        'level' : level.Level()
+        'level' : level.Level(),
+        'game_over': load_screen.GameOver()
     }
-    game = tools.Game(state_dict, 'main_menu')
+    game = tools.Game(state_dict, 'level')
     # state = main_menu.MainMenu()
     # state = level.Level();
     # state = load_screen.LoadScreen()
@@ -17,4 +18,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main()   
