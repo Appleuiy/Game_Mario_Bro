@@ -5,7 +5,8 @@ from .. import  tools,setup
 pygame.font.init() 
 
 class Info:
-    def __init__(self, state):
+    def __init__(self, state, game_info):
+        self.game_info = game_info
         self.state = state 
         self.create_state_labels()
         self.create_info_labels()
@@ -21,7 +22,7 @@ class Info:
         elif self.state == 'load_screen':
             self.state_labels.append((self.create_label('WORLD'), (280, 200)))
             self.state_labels.append((self.create_label('1 - 1'), (430, 200)))
-            self.state_labels.append((self.create_label('X    3'), (380, 280)))
+            self.state_labels.append((self.create_label('X    {}'.format(self.game_info['lives'])), (380, 280)))
             self.player_image = tools.get_image(setup.GRAPHICS['mario_bros'],*C.PLAYER_ARGS)
         elif self.state == 'game_over':
             self.state_labels.append((self.create_label('GAME OVER'), (280, 300)))

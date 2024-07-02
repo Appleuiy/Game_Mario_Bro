@@ -10,12 +10,12 @@ def main():
         'level' : level.Level(),
         'game_over': load_screen.GameOver()
     }
-    game = tools.Game(state_dict, 'level')
+    game = tools.Game(state_dict, 'main_menu')
     # state = main_menu.MainMenu()
     # state = level.Level();
     # state = load_screen.LoadScreen()
     game.run()
 
-
+ 
 if __name__ == '__main__':
     main()   

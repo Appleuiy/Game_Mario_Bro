@@ -1,21 +1,43 @@
 from ..components import info
 from .. import tools, setup
 from .. import constants as C 
-from ..components import player, stuff
+from ..components import player, stuff, brick, box
 import pygame, json, os
 
 
 
 class Level:
-    def __init__(self):
+    def start(self, game_info ):
+        self.game_info = game_info
         self.finished = False
         self.next = 'game_over'
-        self.info = info.Info('level')
+        self.info = info.Info('level', game_info)
         self.load_map_data()
         self.setup_background()
         self.setup_start_positions()
         self.setup_player()
         self.setup_ground_items()
+        self.setup_bricks_and_boxes()
+    
+    def setup_bricks_and_boxes(self):
+        self.brick_group = pygame.sprite.Group()
+        self.box_group = pygame.sprite.Group()
+
+        if 'brick' in self.map_data:
+            for brick_data in self.map_data['brick']:
+                x, y = brick_data['x'], brick_data['y']
+                brick_type = brick_data['type']
+                if 'brick_num' in brick_data:
+                    pass 
+                else:
+                    self.brick_group.add(brick.Brick(x, y, brick_type))
+
+        
+        if 'box' in self.map_data:
+            for box_data in self.map_data['box']:
+                x, y = box_data['x'], box_data['y']
+                box_type = brick_data['type']
+                self.box_group.add(box.Box(x, y, box_type))
     
     def setup_ground_items(self):
         self.ground_items_group = pygame.sprite.Group()
@@ -59,10 +81,13 @@ class Level:
         if self.player.dead:
             if self.current_time - self.player.death_timer > 3000:
                 self.finished = True
+                self.update_game_info()
         else:
             self.update_player_position()
             self.update_game_window()
             self.check_if_go_die()
+            self.brick_group.update()
+            self.box_group.update()
         
         self.draw(surface)
 
@@ -83,7 +108,8 @@ class Level:
         self.check_y_collisions()
 
     def check_x_collisions(self):
-        ground_item = pygame.sprite.spritecollideany(self.player, self.ground_items_group)
+        check_group = pygame.sprite.Group(self.ground_items_group,self.brick_group, self.box_group)
+        ground_item = pygame.sprite.spritecollideany(self.player, check_group)
         if ground_item:
             self.adjust_player_x(ground_item)
 
@@ -95,7 +121,8 @@ class Level:
         self.player.x_vel = 0
 
     def check_y_collisions(self):
-        ground_item = pygame.sprite.spritecollideany(self.player, self.ground_items_group)
+        check_group = pygame.sprite.Group(self.ground_items_group,self.brick_group, self.box_group)
+        ground_item = pygame.sprite.spritecollideany(self.player, check_group)
         if ground_item:
             self.adjust_player_y(ground_item)
         
@@ -103,7 +130,7 @@ class Level:
 
     def check_will_fall(self, sprite):
         sprite.rect.y += 1
-        check_group = pygame.sprite.Group(self.ground_items_group)
+        check_group = pygame.sprite.Group(self.ground_items_group, self.brick_group, self.box_group)
         collied = pygame.sprite.spritecollideany(sprite, check_group)
         if not collied and sprite.state != 'jump':
             sprite.state = 'fall'
@@ -132,6 +159,8 @@ class Level:
     def draw(self, surface):
         self.game_ground.blit(self.background, self.game_window, self.game_window)
         self.game_ground.blit(self.player.image, self.player.rect)
+        self.brick_group.draw(self.game_ground )
+        self.box_group.draw(self.game_ground)
         surface.blit(self.game_ground, (0, 0), self.game_window)
         
         self.info.update()
@@ -141,3 +170,11 @@ class Level:
     def check_if_go_die(self):
         if self.player.rect.y > C.SCREEN_HEIGHT:
             self.player.go_die()
+
+    def update_game_info(self):
+        if self.player.dead:
+            self.game_info['lives'] -= 1
+        if self.game_info['lives'] == 0:
+            self.next = 'game_over'
+        else:
+            self.next = 'load_screen'

@@ -241,12 +241,12 @@ class Player(pygame.sprite.Sprite):
         #     self.y_vel = 0
         #     self.state = 'walk'
 
-        # if keys[pygame.K_RIGHT]:
-        #     self.x_vel = self.calc_vel(self.x_vel, self.x_accel, self.max_x_vel, True)
-        # elif keys[pygame.K_LEFT]:
-        #     self.x_vel = self.calc_vel(self.x_vel, self.x_accel, self.max_x_vel, False)
-        # else:
-        #     self.do_nothing()
+        if keys[pygame.K_RIGHT]:
+            self.x_vel = self.calc_vel(self.x_vel, self.x_accel, self.max_x_vel, True)
+        elif keys[pygame.K_LEFT]:
+            self.x_vel = self.calc_vel(self.x_vel, self.x_accel, self.max_x_vel, False)
+        else:
+            self.do_nothing()
 
     def do_nothing(self):
         pass
